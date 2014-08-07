@@ -1,0 +1,57 @@
+" To run, run ":source %", then press \I (init) and \\ (run).
+" Current tape and state:
+" 0000000000000000000000000000000_A00000000000000000000000000000000
+" Initial tape and state:
+" 0000000000000000000000000000000_A00000000000000000000000000000000
+
+" Supported editors:
+"   elvis
+"   ex-vi
+"   nvi
+"   vim
+
+" Encoding:
+"   <left tape cells>_<initial state><tape cell below head><right tape cells>
+" Transitions:
+"   Encoded as lr <new state> lr <new symbol> \ <direction>.
+"   Start position: cursor (underscore).
+"   End position: symbol (precondition for \L or \R).
+
+"       i1   Write new tape cell.
+"           h   Direction (h = left, l = right).
+"            i_B   Write new state.
+"                 \N   Execte next command (leave this out to terminate).
+map _A0 i1hi_B\N
+map _A1 i1li_A\N
+map _B0 i0li_A\N
+map _B1 i0hi_C\N
+map _C0 i0li_A\N
+map _C1 i1hi_D\N
+map _D0 i0hi_E\N
+map _D1 i1li_B\N
+map _E0 i0li_B\N
+map _E1 i1li_H
+
+" Initialize:
+"      3G   Go to the second line.
+"        d$   Clear the second line.
+"          5G   Go to the fourth line.
+"            d$   Cut the fourth line.
+"              P   Restore the fourth line by pasting what was just cut.
+"               3G   Go back to the second line.
+"                 P   Paste the content of the fourth line here.
+"                  0f_   Go to the underscore.
+map \I 3Gd$5Gd$P3GP0f_
+
+" Step:
+" Read 3 chars below the cursor, and execute
+"      "a3x   Cut 3 chars into a named buffer so @ can be used to execute them.
+"          @a   Execute the characters that have been read.
+"               This will invoke one of the _<state><cell> map commands
+"               that define the Turing machine.
+map \\ "a3x@a
+
+" Next:
+"      h   Go 1 char left (to the underscore).
+"       \\   Execute the next step. Leave it one out for single-step debugging.
+map \N h\\
