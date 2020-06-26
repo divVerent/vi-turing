@@ -13,10 +13,6 @@
 " Encoding:
 "   <left tape cells>_<initial state><tape cell below head><right tape cells>
 " Transitions:
-"   Encoded as lr <new state> lr <new symbol> \ <direction>.
-"   Start position: cursor (underscore).
-"   End position: symbol (precondition for \L or \R).
-
 "       i1   Write new tape cell.
 "           h   Direction (h = left, l = right).
 "            i_B   Write new state.
